@@ -1,0 +1,32 @@
+name: README Check
+
+on:
+  push:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  readme-check:
+    name: README validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Check README
+        shell: bash
+        run: |
+          test -f README.md || {
+            echo "::error::README.md is missing"
+            exit 1
+          }
+          grep -q '[^[:space:]]' README.md || {
+            echo "::error::README.md is empty"
+            exit 1
+          }
+          echo "README check passed"
